@@ -1,6 +1,6 @@
 module.exports = {
   router: {
-    linkExactActiveClass: 'active',
+    linkExactClass: 'active',
     extendRoutes(routes, resolve) {
       routes.push({
         name: 'login',
