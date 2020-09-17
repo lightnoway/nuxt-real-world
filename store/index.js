@@ -2,29 +2,29 @@ const cookieparser = process.server ? require('cookieparser') : undefined
 
 export const state = () => {
   return {
-    auth: null
+    user: null
   }
 };
 
 
 export const mutations = {
-  setAuth(state, auth) {
-    state.auth = auth;
+  setUser(state, data) {
+    state.user = data;
   }
 }
 
 export const actions = {
   //服务端钩子
   nuxtServerInit({ commit }, { req }) {
-    //从客户端拿到 cookie.auth 存入store中, 否则 store中 auth=null
-    let auth = null;
+    //从客户端拿到 cookie.user 存入store中, 否则 store中 user=null
+    let user = null;
     if (req.headers.cookie) {
       const parsed = cookieparser.parse(req.headers.cookie)
       try {
-        auth = JSON.parse(parsed.auth);
+        user = JSON.parse(parsed.user);
       } catch (error) {
       }
     }
-    commit('setAuth', auth);
+    commit('setUser', user);
   }
 }

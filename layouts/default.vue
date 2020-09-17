@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    auth:{{$store.state.auth}}
+    user:{{user}}
     <nav class="navbar navbar-light">
       <div class="container">
         <nuxt-link class="navbar-brand" to="/">conduit</nuxt-link>
@@ -9,25 +9,35 @@
             <!-- Add "active" class when you're on that page" -->
             <nuxt-link class="nav-link" to="/" extract>Home</nuxt-link>
           </li>
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/create/article">
-              <i class="ion-compose"></i>&nbsp;New Post
-            </nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/settings">
-              <i class="ion-gear-a"></i>&nbsp;Settings
-            </nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/register">Sign up</nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/profile/conduit0916">
-              <img class="user-pic" />
-              conduit0916
-            </nuxt-link>
-          </li>
+          <template v-if="user">
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="/create/article">
+                <i class="ion-compose"></i>&nbsp;New Post
+              </nuxt-link>
+            </li>
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="/settings">
+                <i class="ion-gear-a"></i>&nbsp;Settings
+              </nuxt-link>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" @click.prevent="logout" href>Logout</a>
+            </li>
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="/profile/conduit0916">
+                <img class="user-pic" :src="user.image" />
+                {{user.username}}
+              </nuxt-link>
+            </li>
+          </template>
+          <template v-else>
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="/login">Sign in</nuxt-link>
+            </li>
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="/register">Sign up</nuxt-link>
+            </li>
+          </template>
         </ul>
       </div>
     </nav>
@@ -45,3 +55,17 @@
     </footer>
   </div>
 </template>
+<script>
+import { mapState } from "vuex";
+const Cookie = process.client ? require("js-cookie") : undefined;
+export default {
+  computed: mapState(["user"]),
+  methods: {
+    logout() {
+      Cookie.remove("user");
+      this.$store.commit("setUser");
+      this.$router.push('/');
+    },
+  },
+};
+</script>

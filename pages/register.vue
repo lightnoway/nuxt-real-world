@@ -73,19 +73,22 @@ export default {
   },
   methods: {
     async onSubmit() {
+      let user;
       try {
         const { data } = await (this.isLogin ? login : register)({
           user: this.user,
         });
-        //保存token
-        console.log(data);
-        const auth = { accessToken: data.user.token };
-        Cookie.set("auth", auth);
-        this.$store.commit("setAuth", auth);
-        this.$router.push("/");
+        user = data.user;
       } catch (error) {
+        // console.log(error);
         this.errors = error.response.data.errors;
+        return;
       }
+      //保存token
+      Cookie.set("user", user);
+      this.$store.commit("setUser", user);
+      // console.log("route.push");
+      this.$router.push("/");
     },
   },
 };
