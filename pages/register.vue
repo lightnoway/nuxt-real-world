@@ -9,7 +9,9 @@
           </p>
 
           <ul class="error-messages">
-            <li>That email is already taken</li>
+            <template v-for="(messages,field) in errors">
+              <li v-for="(message,index) in messages" :key="index">{{field +" "+ message}}</li>
+            </template>
           </ul>
           <form @submit.prevent="onLogin">
             <fieldset class="form-group">
@@ -71,6 +73,9 @@ export default {
         email: "",
         password: "",
       },
+      errors: {
+        // email: ["a", "b"],
+      },
     };
   },
   computed: {
@@ -85,10 +90,10 @@ export default {
         const data = await login({
           user: this.user,
         });
-        console.log(data);
+        //保存token
         this.$router.push("/");
       } catch (error) {
-        console.log(error);
+        this.errors = error.response.data.errors;
       }
     },
   },
