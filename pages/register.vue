@@ -51,6 +51,8 @@
 </template>
 <script>
 import { login, register } from "@/api/user";
+const Cookie = process.client ? require("js-cookie") : undefined;
+
 export default {
   data() {
     return {
@@ -71,12 +73,15 @@ export default {
   },
   methods: {
     async onSubmit() {
-      throw new Error('som wrong');
       try {
-        const data = await (this.isLogin ? login : register)({
+        const { data } = await (this.isLogin ? login : register)({
           user: this.user,
         });
         //保存token
+        console.log(data);
+        const auth = { accessToken: data.user.token };
+        Cookie.set("auth", auth);
+        this.$store.commit("setAuth", auth);
         this.$router.push("/");
       } catch (error) {
         this.errors = error.response.data.errors;

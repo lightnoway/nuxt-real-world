@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    auth:{{$store.state.auth}}
     <nav class="navbar navbar-light">
       <div class="container">
         <nuxt-link class="navbar-brand" to="/">conduit</nuxt-link>
