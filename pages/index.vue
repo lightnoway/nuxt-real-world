@@ -44,6 +44,20 @@
               <span>Read more...</span>
             </nuxt-link>
           </div>
+
+          <nav>
+            <ul class="pagination">
+              <li
+                v-for="pos of totalPage"
+                class="page-item"
+                :class="{active:page === pos}"
+                :key="pos"
+                @click="changePage(pos)"
+              >
+                <a class="page-link" href @click.prevent>{{pos}}</a>
+              </li>
+            </ul>
+          </nav>
         </div>
 
         <div class="col-md-3">
@@ -68,18 +82,35 @@
 </template>
 <script>
 import { getArticles } from "@/api/article";
+const pageSize = 10;
 export default {
-  async asyncData() {
+  watchQuery:['page'],
+  async asyncData({ query }) {
     // 服务端执行, 客户端呢?比如从其他页跳转到首页
     console.log(
       "客户端也执行",
       "当从其他页跳转过来时",
       "整体逻辑应在客户端,服务端一致"
     );
+    const page = parseInt(query.page || 1, 10);
+    const offset = (page - 1) * pageSize;
 
-    const { data } = await getArticles();
-    console.log(data.articles[0]);
-    return { articles: data.articles };
+    const { data } = await getArticles({
+      offset,
+      limit: pageSize,
+    });
+    console.log("page change",page,query);
+    return { articles: data.articles, articlesCount: data.articlesCount, page };
+  },
+  computed: {
+    totalPage() {
+      return Math.ceil(this.articlesCount / pageSize);
+    },
+  },
+  methods: {
+    changePage(page) {
+      this.$router.push({ path: "/", query: { page } });
+    },
   },
 };
 </script>
