@@ -1,8 +1,9 @@
 import request from '@/utils/request'
 
-export const articles = data => request("/api/articles", {
+export const getArticles = params => request("/api/articles", {
   method:"GET",
-  data//Filter by tag:
+  params 
+  //Filter by tag:
 
   // ?tag=AngularJS
   
