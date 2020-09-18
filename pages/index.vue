@@ -21,45 +21,26 @@
             </ul>
           </div>
 
-          <div class="article-preview">
+          <div v-for="article in articles" :key="article.slug" class="article-preview">
             <div class="article-meta">
-              <a href="profile.html">
-                <img src="http://i.imgur.com/Qr71crq.jpg" />
-              </a>
+              <nuxt-link :to='{name:"profile-username",params:{username:article.author.username}}'>
+                <img :src="article.author.image" />
+              </nuxt-link>
               <div class="info">
-                <a href class="author">Eric Simons</a>
-                <span class="date">January 20th</span>
+                <a href class="author">{{article.author.username}}</a>
+                <span class="date">{{article.createAt}}</span>
               </div>
               <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 29
+                <i class="ion-heart" :class='{active:article.favorited}'></i> {{article.favoritesCount}}
               </button>
             </div>
-            <a href class="preview-link">
-              <h1>How to build webapps that scale</h1>
-              <p>This is the description for the post.</p>
+            <nuxt-link :to='{name:"article-slug",params:{slug:article.slug}}' class="preview-link">
+              <h1>{{article.title}}</h1>
+              <p>{{article.description}}</p>
               <span>Read more...</span>
-            </a>
+            </nuxt-link>
           </div>
 
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href="profile.html">
-                <img src="http://i.imgur.com/N4VcUeJ.jpg" />
-              </a>
-              <div class="info">
-                <a href class="author">Albert Pai</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 32
-              </button>
-            </div>
-            <a href class="preview-link">
-              <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-            </a>
-          </div>
         </div>
 
         <div class="col-md-3">
@@ -82,3 +63,16 @@
     </div>
   </div>
 </template>
+<script>
+import { articles } from "@/api/article";
+export default {
+  async asyncData() {
+    // 服务端执行, 客户端呢?比如从其他页跳转到首页
+    console.log('客户端也执行','当从其他页跳转过来时','整体逻辑应在客户端,服务端一致');
+
+    const { data } = await articles();
+    // console.dir( data.articles[0]);
+    return { articles: data.articles };
+  },
+};
+</script>
