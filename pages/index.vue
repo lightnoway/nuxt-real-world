@@ -65,7 +65,13 @@
             <p>Popular Tags</p>
 
             <div class="tag-list">
-              <a v-for="tag of cleanTags" :key="tag" href class="tag-pill tag-default">{{tag}}</a>
+              <a
+                v-for="tag of cleanTags"
+                :key="tag"
+                href
+                class="tag-pill tag-default"
+                @click.prevent="changePage(1,tag)"
+              >{{tag}}</a>
             </div>
           </div>
         </div>
@@ -78,7 +84,15 @@ import { getArticles } from "@/api/article";
 import { getTags } from "@/api/tag";
 const pageSize = 10;
 export default {
-  watchQuery: ["page"],
+  watchQuery: ["page", "tag"],
+  data() {
+    return {
+      articles: [],
+      articlesCount: 0,
+      page: [],
+      tags: [],
+    };
+  },
   async asyncData({ query }) {
     // 服务端执行, 客户端呢?比如从其他页跳转到首页
     console.log(
@@ -88,25 +102,30 @@ export default {
     );
     const page = parseInt(query.page || 1, 10);
     const offset = (page - 1) * pageSize;
-    const [
-      {
-        data: { articles, articlesCount },
-      },
-      {
-        data: { tags },
-      },
-    ] = await Promise.all([
-      getArticles(offset, { limit: pageSize }),
-      getTags(),
-    ]);
-    // debugger;
-    console.log("tags", tags);
-    return {
-      articles,
-      articlesCount,
-      page,
-      tags,
-    };
+    try {
+      const [
+        {
+          data: { articles, articlesCount },
+        },
+        {
+          data: { tags },
+        },
+      ] = await Promise.all([
+        getArticles({ limit: pageSize, offset, tag: query.tag }),
+        getTags(),
+      ]);
+      // debugger;
+      // console.log("tags", tags);
+      return {
+        articles,
+        articlesCount,
+        page,
+        tags,
+      };
+    } catch (error) {
+      console.log("request error", error);
+      console.dir(error);
+    }
   },
   computed: {
     totalPage() {
@@ -114,12 +133,17 @@ export default {
     },
     cleanTags() {
       const white = String.fromCharCode(8204);
-      return this.tags.filter((t) => t && t !== white);
+      return this.tags.filter((t) => t && t[0] !== white);
     },
   },
   methods: {
-    changePage(page) {
-      this.$router.push({ path: "/", query: { page } });
+    changePage(page, tag = this.$route.query.tag) {
+      console.log("changePage", page, tag);
+      debugger;
+      this.$router.push({
+        name: "index",
+        query: { page, tag },
+      });
     },
   },
 };
