@@ -65,14 +65,7 @@
             <p>Popular Tags</p>
 
             <div class="tag-list">
-              <a href class="tag-pill tag-default">programming</a>
-              <a href class="tag-pill tag-default">javascript</a>
-              <a href class="tag-pill tag-default">emberjs</a>
-              <a href class="tag-pill tag-default">angularjs</a>
-              <a href class="tag-pill tag-default">react</a>
-              <a href class="tag-pill tag-default">mean</a>
-              <a href class="tag-pill tag-default">node</a>
-              <a href class="tag-pill tag-default">rails</a>
+              <a v-for="tag of cleanTags" :key="tag" href class="tag-pill tag-default">{{tag}}</a>
             </div>
           </div>
         </div>
@@ -82,9 +75,10 @@
 </template>
 <script>
 import { getArticles } from "@/api/article";
+import { getTags } from "@/api/tag";
 const pageSize = 10;
 export default {
-  watchQuery:['page'],
+  watchQuery: ["page"],
   async asyncData({ query }) {
     // 服务端执行, 客户端呢?比如从其他页跳转到首页
     console.log(
@@ -94,17 +88,33 @@ export default {
     );
     const page = parseInt(query.page || 1, 10);
     const offset = (page - 1) * pageSize;
-
-    const { data } = await getArticles({
-      offset,
-      limit: pageSize,
-    });
-    console.log("page change",page,query);
-    return { articles: data.articles, articlesCount: data.articlesCount, page };
+    const [
+      {
+        data: { articles, articlesCount },
+      },
+      {
+        data: { tags },
+      },
+    ] = await Promise.all([
+      getArticles(offset, { limit: pageSize }),
+      getTags(),
+    ]);
+    // debugger;
+    console.log("tags", tags);
+    return {
+      articles,
+      articlesCount,
+      page,
+      tags,
+    };
   },
   computed: {
     totalPage() {
       return Math.ceil(this.articlesCount / pageSize);
+    },
+    cleanTags() {
+      const white = String.fromCharCode(8204);
+      return this.tags.filter((t) => t && t !== white);
     },
   },
   methods: {
