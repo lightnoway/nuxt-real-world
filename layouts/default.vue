@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    user:{{user}}
     <nav class="navbar navbar-light">
       <div class="container">
         <nuxt-link class="navbar-brand" to="/">conduit</nuxt-link>

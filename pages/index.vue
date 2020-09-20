@@ -12,11 +12,26 @@
         <div class="col-md-9">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
-                <a class="nav-link disabled" href>Your Feed</a>
+              <li v-if="user" class="nav-item">
+                <nuxt-link
+                  class="nav-link"
+                  :to="{name:'index',query:{tab:'your_feed'}}"
+                  :class="{active:tab==='your_feed'}"
+                >Your Feed</nuxt-link>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href>Global Feed</a>
+                <nuxt-link
+                  class="nav-link"
+                  :to="{name:'index'}"
+                  :class="{active:tab==='global_feed'}"
+                >Global Feed</nuxt-link>
+              </li>
+              <li v-if="tag" class="nav-item">
+                <nuxt-link
+                  class="nav-link"
+                  :to="{name:'index',query:{tag}}"
+                  :class="{active:tab==='tag'}"
+                >#{{tag}}</nuxt-link>
               </li>
             </ul>
           </div>
@@ -80,20 +95,23 @@
   </div>
 </template>
 <script>
-import { getArticles } from "@/api/article";
+import { getArticles, getFeedArticles } from "@/api/article";
 import { getTags } from "@/api/tag";
+import { mapState } from "vuex";
 const pageSize = 10;
 export default {
-  watchQuery: ["page", "tag"],
+  watchQuery: ["page", "tag", "tab"],
   data() {
     return {
       articles: [],
       articlesCount: 0,
       page: [],
       tags: [],
+      tag: undefined,
+      tab: undefined,
     };
   },
-  async asyncData({ query }) {
+  async asyncData({ query, store }) {
     // 服务端执行, 客户端呢?比如从其他页跳转到首页
     console.log(
       "客户端也执行",
@@ -102,6 +120,12 @@ export default {
     );
     const page = parseInt(query.page || 1, 10);
     const offset = (page - 1) * pageSize;
+    const tag = query.tag;
+    const tab = tag
+      ? "tag"
+      : query.tab === "your_feed" && store.state.user
+      ? "your_feed"
+      : "global_feed";
     try {
       const [
         {
@@ -111,16 +135,23 @@ export default {
           data: { tags },
         },
       ] = await Promise.all([
-        getArticles({ limit: pageSize, offset, tag: query.tag }),
+        (tab === "your_feed" ? getFeedArticles : getArticles)({
+          limit: pageSize,
+          offset,
+          tag,
+        }),
         getTags(),
       ]);
       // debugger;
       // console.log("tags", tags);
+      console.log("mapState([usr])", mapState(["user"]));
       return {
         articles,
         articlesCount,
         page,
         tags,
+        tag,
+        tab,
       };
     } catch (error) {
       console.log("request error", error);
@@ -128,6 +159,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(["user"]),
     totalPage() {
       return Math.ceil(this.articlesCount / pageSize);
     },
@@ -138,11 +170,9 @@ export default {
   },
   methods: {
     changePage(page, tag = this.$route.query.tag) {
-      console.log("changePage", page, tag);
-      debugger;
       this.$router.push({
         name: "index",
-        query: { page, tag },
+        query: Object.assign({}, this.$route.query, { page, tag }),
       });
     },
   },
