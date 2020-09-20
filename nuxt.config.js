@@ -13,5 +13,8 @@ module.exports = {
         component: resolve(__dirname, 'pages/editor/_id.vue')
       })
     }
-  }
+  }, 
+  plugins: [
+    '~/plugins/request.js', 
+  ]
 }
