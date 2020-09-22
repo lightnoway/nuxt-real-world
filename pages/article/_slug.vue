@@ -31,8 +31,7 @@
 
     <div class="container page">
       <div class="row article-content">
-        <div class="col-md-12" v-html="article.body">
-        </div>
+        <div class="col-md-12" v-html="article.body"></div>
       </div>
 
       <hr />
@@ -117,11 +116,13 @@
 </template>
 <script>
 import { getArticle } from "@/api/article";
+const md = require("markdown-it")();
 export default {
-  async asyncData({params}) {
+  async asyncData({ params }) {
     const {
       data: { article },
     } = await getArticle(params.slug);
+    article.body = md.render(article.body);
     return { article };
   },
 };
