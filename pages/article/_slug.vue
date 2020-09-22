@@ -85,5 +85,18 @@ export default {
   components: {
     articleMeta,
   },
+  head() {
+    const { article } = this;
+    return {
+      title: `${article.title} - conduit`,
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: article.description
+        },
+      ],
+    };
+  },
 };
 </script>
