@@ -24,6 +24,9 @@ export const getArticles = params => request("/api/articles", {
   // ?offset=0
 })
 
+export const getArticleComments = slug => request(`/api/articles/${slug}/comments`, {
+  method: "GET",
+})
 export const getArticle = slug => request(`/api/articles/${slug}`, {
   method: "GET",
 })
