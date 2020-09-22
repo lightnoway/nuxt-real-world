@@ -48,7 +48,11 @@
                 >{{article.author.username}}</nuxt-link>
                 <span class="date">{{article.createdAt|dayjs}}</span>
               </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
+              <button
+                class="btn btn-outline-primary btn-sm pull-xs-right"
+                @click="onFavorite(article)"
+                :disabled="article.favoriteDisabled"
+              >
                 <i class="ion-heart" :class="{active:article.favorited}"></i>
                 {{article.favoritesCount}}
               </button>
@@ -95,7 +99,12 @@
   </div>
 </template>
 <script>
-import { getArticles, getFeedArticles } from "@/api/article";
+import {
+  getArticles,
+  getFeedArticles,
+  addFavorite,
+  removeFavorite,
+} from "@/api/article";
 import { getTags } from "@/api/tag";
 import { mapState } from "vuex";
 const pageSize = 10;
@@ -145,6 +154,7 @@ export default {
       // debugger;
       // console.log("tags", tags);
       console.log("mapState([usr])", mapState(["user"]));
+      articles.forEach((a) => (a.favoriteDisabled = false));
       return {
         articles,
         articlesCount,
@@ -174,6 +184,22 @@ export default {
         name: "index",
         query: Object.assign({}, this.$route.query, { page, tag }),
       });
+    },
+    async onFavorite(article) {
+      article.favoriteDisabled = true;
+      const diff = article.favorited ? -1 : 1;
+      article.favoritesCount += diff;
+      try {
+        const {
+          data: { article: res },
+        } = await (article.favorited ? removeFavorite : addFavorite)(
+          article.slug
+        );
+        Object.assign(article, res);
+      } catch (error) {
+        article.favoritesCount -= diff;
+      }
+      article.favoriteDisabled = false;
     },
   },
 };
