@@ -1,9 +1,7 @@
-console.log('nuxt config ,env');
-console.dir(process);
 module.exports = {
   server: process.env.NODE_ENV === 'development' ? undefined : {
     host: '0.0.0.0',
-    port: '80'
+    port: '3000'
   },
   router: {
     linkExactClass: 'active',
