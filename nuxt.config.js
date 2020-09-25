@@ -1,4 +1,10 @@
+console.log('nuxt config ,env');
+console.dir(process);
 module.exports = {
+  server: process.env.NODE_ENV === 'development' ? undefined : {
+    host: '0.0.0.0',
+    port: '80'
+  },
   router: {
     linkExactClass: 'active',
     extendRoutes(routes, resolve) {
@@ -13,9 +19,9 @@ module.exports = {
         component: resolve(__dirname, 'pages/editor/_id.vue')
       })
     }
-  }, 
+  },
   plugins: [
-    '~/plugins/request.js', 
-    '~/plugins/dayjs.js', 
+    '~/plugins/request.js',
+    '~/plugins/dayjs.js',
   ]
 }
