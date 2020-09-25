@@ -54,6 +54,9 @@ jobs:
         port: 22
         script: |
           cd ~/realworld-nuxtjs
+          echo $PATH
+          source ~/.bashrc
+          echo $PATH
           wget https://github.com/lightnoway/nuxt-real-world/releases/latest/download/release.tgz -O release.tgz
           tar zxvf release.tgz
           npm install --production
