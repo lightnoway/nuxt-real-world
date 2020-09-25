@@ -54,8 +54,12 @@ jobs:
         port: 22
         script: |
           cd ~/realworld-nuxtjs
+          whoami
           echo $PATH
+          cat ~/.bashrc
           source ~/.bashrc
+          echo $PATH
+          export PATH=`yarn global bin`:$PATH
           echo $PATH
           wget https://github.com/lightnoway/nuxt-real-world/releases/latest/download/release.tgz -O release.tgz
           tar zxvf release.tgz
