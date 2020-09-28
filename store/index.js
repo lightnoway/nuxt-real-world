@@ -13,6 +13,7 @@ export const mutations = {
   }
 }
 
+const Cookie = process.client ? require("js-cookie") : undefined;
 export const actions = {
   //服务端钩子
   nuxtServerInit({ commit }, { req }) {
@@ -26,5 +27,9 @@ export const actions = {
       }
     }
     commit('setUser', user);
+  },
+  clientSetUser({ commit }, user) {
+    Cookie.set("user", user);
+    commit("setUser", user);
   }
 }

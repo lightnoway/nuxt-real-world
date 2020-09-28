@@ -51,7 +51,7 @@
 </template>
 <script>
 import { login, register } from "@/api/user";
-const Cookie = process.client ? require("js-cookie") : undefined;
+import { mapAction } from "vuex";
 
 export default {
   data() {
@@ -72,6 +72,7 @@ export default {
     },
   },
   methods: {
+    ...mapAction(["clientSetUser"]),
     async onSubmit() {
       let user;
       try {
@@ -85,8 +86,7 @@ export default {
         return;
       }
       //保存token
-      Cookie.set("user", user);
-      this.$store.commit("setUser", user);
+      this.clientSetUser(user);
       // console.log("route.push");
       this.$router.push("/");
     },

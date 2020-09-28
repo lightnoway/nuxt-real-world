@@ -23,7 +23,10 @@
               <a class="nav-link" @click.prevent="logout" href>Logout</a>
             </li>
             <li class="nav-item">
-              <nuxt-link class="nav-link" to="/profile/conduit0916">
+              <nuxt-link
+                class="nav-link"
+                :to="{name:'profile-username',params:{username:user.username}}"
+              >
                 <img class="user-pic" :src="user.image" />
                 {{user.username}}
               </nuxt-link>
@@ -63,7 +66,7 @@ export default {
     logout() {
       Cookie.remove("user");
       this.$store.commit("setUser");
-      this.$router.push('/');
+      this.$router.push("/");
     },
   },
 };
