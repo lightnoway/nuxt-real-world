@@ -1,4 +1,4 @@
-import {request} from '@/plugins/request'
+import { request } from '@/plugins/request'
 
 export const login = data => request("/api/users/login", {
   method: "Post",
@@ -17,7 +17,7 @@ export const register = data => request("/api/users", {
     "image": "https://i.stack.imgur.com/xHWG8.jpg"
   }
 */
-export const updateUser= data=>request("/api/user", {
+export const updateUser = data => request("/api/user", {
   method: "PUT",
   data
 })

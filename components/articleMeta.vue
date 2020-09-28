@@ -1,12 +1,12 @@
 <template>
   <div class="article-meta">
-    <nuxt-link :to="{name:'profile-username',params:{username:'article.author.username'}}">
+    <nuxt-link :to="{name:'profile-username',params:{username:article.author.username}}">
       <img :src="article.author.image" />
     </nuxt-link>
     <div class="info">
       <nuxt-link
         class="author"
-        :to="{name:'profile-username',params:{username:'article.author.username'}}"
+        :to="{name:'profile-username',params:{username:article.author.username}}"
       >{{article.author.username}}</nuxt-link>
       <span class="date">{{article.createdAt|dayjs}}</span>
     </div>
