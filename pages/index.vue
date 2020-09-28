@@ -122,11 +122,11 @@ export default {
   },
   async asyncData({ query, store }) {
     // 服务端执行, 客户端呢?比如从其他页跳转到首页
-    console.log(
-      "客户端也执行",
-      "当从其他页跳转过来时",
-      "整体逻辑应在客户端,服务端一致"
-    );
+    // console.log(
+    //   "客户端也执行",
+    //   "当从其他页跳转过来时",
+    //   "整体逻辑应在客户端,服务端一致"
+    // );
     const page = parseInt(query.page || 1, 10);
     const offset = (page - 1) * pageSize;
     const tag = query.tag;
@@ -151,9 +151,6 @@ export default {
         }),
         getTags(),
       ]);
-      // debugger;
-      // console.log("tags", tags);
-      console.log("mapState([usr])", mapState(["user"]));
       articles.forEach((a) => (a.favoriteDisabled = false));
       return {
         articles,
