@@ -58,14 +58,14 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 const Cookie = process.client ? require("js-cookie") : undefined;
 export default {
   computed: mapState(["user"]),
   methods: {
+    ...mapActions(["clientSetUser"]),
     logout() {
-      Cookie.remove("user");
-      this.$store.commit("setUser");
+      this.clientSetUser(null);
       this.$router.push("/");
     },
   },

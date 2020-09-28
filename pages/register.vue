@@ -51,7 +51,7 @@
 </template>
 <script>
 import { login, register } from "@/api/user";
-import { mapAction } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -72,7 +72,7 @@ export default {
     },
   },
   methods: {
-    ...mapAction(["clientSetUser"]),
+    ...mapActions(["clientSetUser"]),
     async onSubmit() {
       let user;
       try {
